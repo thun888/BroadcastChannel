@@ -3,7 +3,20 @@ const { pageKey } = Astro.props
 
 const server = import.meta.env.PUBLIC_ARTALK_SERVER
 const site = import.meta.env.PUBLIC_ARTALK_SITE
+
+// 提取服务器 URL 用于预连接
+const serverUrl = server ? new URL(server.replace(/\/+$/, ''), 'https://example.com').origin : ''
 ---
+
+<!-- 预连接到 Artalk 服务器，提升资源加载优先级 -->
+{serverUrl && (
+  <>
+    <link rel="preconnect" href={serverUrl} crossorigin />
+    <link rel="dns-prefetch" href={serverUrl} />
+    <link rel="preload" href={`${server.replace(/\/+$/, '')}/dist/Artalk.css`} as="style" />
+    <link rel="preload" href={`${server.replace(/\/+$/, '')}/dist/Artalk.js`} as="script" fetchpriority="high" />
+  </>
+)}
 
 <div id="artalk"></div>
 
@@ -57,7 +70,8 @@ return
     if (!window.Artalk) {
       const script = document.createElement('script')
       script.src = server.replace(/\/+$/, '') + '/dist/Artalk.js'
-      script.defer = true
+      // 移除 defer，添加 fetchpriority 提升加载优先级
+      script.fetchPriority = 'high'
       script.onload = init
       document.body.appendChild(script)
     }
@@ -66,10 +80,13 @@ return
     }
   }
 
-  if (document.readyState === 'loading') {
+  // 立即开始加载，不等待 DOMContentLoaded
+  // 使用 requestIdleCallback 在空闲时加载，或直接加载
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(loadArtalk, { timeout: 1000 })
+  } else if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', loadArtalk)
-  }
- else {
+  } else {
     loadArtalk()
   }
 </script>
