@@ -225,9 +225,6 @@ hr {
   margin-left: 28px;
 }
 
-.item {
-}
-
 .image-box,
 .video-box,
 .audio-box,
@@ -375,9 +372,6 @@ audio::-webkit-media-controls-panel {
   margin-bottom: var(--box-margin);
 }
 
-.nav-icon {
-}
-
 .nav-link:link,
 .nav-link:visited {
   flex: 1;
@@ -468,6 +462,16 @@ audio::-webkit-media-controls-panel {
   background-size: 16px 16px;
   opacity: 0.25;
   background-image: url('tags.png');
+  background-repeat: no-repeat;
+  display: inline-block;
+}
+
+.tag-chat {
+  width: 18px;
+  height: 18px;
+  background-size: 18px 18px;
+  opacity: 0.25;
+  background-image: url('LineMdChat.svg');
   background-repeat: no-repeat;
   display: inline-block;
 }
@@ -805,11 +809,19 @@ li:has(input[type='checkbox']:checked:disabled)::before {
   pointer-events: all;
 }
 
+.artalk-comments{
+  margin-top: 30px;
+  margin-left: 30px;
+}
+
 /* END: To Do Items */
 
 @media screen and (max-width: 799px) {
   #container {
     width: 100%;
+  }
+  .artalk-comments{
+    margin-left: 0px;
   }
 }
 
@@ -885,5 +897,8 @@ li:has(input[type='checkbox']:checked:disabled)::before {
     margin-left: 0px;
     margin-top: 20px;
     margin-bottom: 20px;
+  }
+  .artalk-comments{
+    margin-left: 0px;
   }
 }

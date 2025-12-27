@@ -1,0 +1,75 @@
+---
+const { pageKey } = Astro.props
+
+const server = import.meta.env.PUBLIC_ARTALK_SERVER
+const site = import.meta.env.PUBLIC_ARTALK_SITE
+---
+
+<div id="artalk"></div>
+
+<script is:inline define:vars={{ server, site }}>
+  function ensureArtalkCSS() {
+    if (!document.getElementById('artalk-css')) {
+      const link = document.createElement('link')
+      link.id = 'artalk-css'
+      link.rel = 'stylesheet'
+      link.href = 'https://cdn.jsdelivr.net/npm/artalk/dist/Artalk.css'
+      document.head.appendChild(link)
+    }
+  }
+
+  function bindThemeSync(at) {
+    const apply = () => {
+      const isDark = document.documentElement.classList.contains('dark')
+      at.setDarkMode(isDark)
+    }
+
+    apply()
+
+    const mo = new MutationObserver(apply)
+    mo.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    })
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', apply)
+  }
+
+  function loadArtalk() {
+    const el = document.querySelector('#artalk')
+    if (!el)
+return
+
+    ensureArtalkCSS()
+
+    const init = () => {
+      const at = window.Artalk.init({
+        el: '#artalk',
+        server,
+        site,
+        // pageKey,
+        pageTitle: document.title,
+        locale: 'zh-CN',
+      })
+      bindThemeSync(at)
+    }
+
+    if (!window.Artalk) {
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/artalk/dist/Artalk.js'
+      script.defer = true
+      script.onload = init
+      document.body.appendChild(script)
+    }
+ else {
+      init()
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadArtalk)
+  }
+ else {
+    loadArtalk()
+  }
+</script>
