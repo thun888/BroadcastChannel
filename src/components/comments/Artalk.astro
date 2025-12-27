@@ -13,7 +13,7 @@ const site = import.meta.env.PUBLIC_ARTALK_SITE
       const link = document.createElement('link')
       link.id = 'artalk-css'
       link.rel = 'stylesheet'
-      link.href = 'https://cdn.jsdelivr.net/npm/artalk/dist/Artalk.css'
+      link.href = server.replace(/\/+$/, '') + '/dist/Artalk.css'
       document.head.appendChild(link)
     }
   }
@@ -56,7 +56,7 @@ return
 
     if (!window.Artalk) {
       const script = document.createElement('script')
-      script.src = 'https://cdn.jsdelivr.net/npm/artalk/dist/Artalk.js'
+      script.src = server.replace(/\/+$/, '') + '/dist/Artalk.js'
       script.defer = true
       script.onload = init
       document.body.appendChild(script)

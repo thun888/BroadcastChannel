@@ -5,7 +5,6 @@ import { getChannelInfo } from '../lib/telegram'
 
 export async function GET(Astro) {
   const { SITE_URL } = Astro.locals
-  const staticProxy = getEnv(import.meta.env, Astro, 'STATIC_PROXY') ?? '/static/'
   const tag = Astro.url.searchParams.get('tag')
   const channel = await getChannelInfo(Astro, {
     q: tag ? `#${tag}` : '',
@@ -22,7 +21,7 @@ export async function GET(Astro) {
     description: channel.description,
     site: url.origin,
     trailingSlash: false,
-    stylesheet: getEnv(import.meta.env, Astro, 'RSS_BEAUTIFY') === 'true' ? '/rss.xsl' : undefined,
+    stylesheet: getEnv(import.meta.env, Astro, 'RSS_BEAUTIFY') ? '/rss.xsl' : undefined,
     items: posts.map(item => ({
       link: `posts/${item.id}`,
       title: item.title,
@@ -38,30 +37,6 @@ export async function GET(Astro) {
         },
         exclusiveFilter(frame) {
           return frame.tag === 'img' && frame.attribs?.class?.includes('modal-img')
-        },
-        transformTags: {
-          'img': (tagName, attribs) => ({
-            tagName,
-            attribs: {
-              ...attribs,
-              src: attribs.src?.startsWith('http') ? staticProxy + attribs.src : attribs.src,
-            },
-          }),
-          'video': (tagName, attribs) => ({
-            tagName,
-            attribs: {
-              ...attribs,
-              src: attribs.src?.startsWith('http') ? staticProxy + attribs.src : attribs.src,
-              poster: attribs.poster?.startsWith('http') ? staticProxy + attribs.poster : attribs.poster,
-            },
-          }),
-          'audio': (tagName, attribs) => ({
-            tagName,
-            attribs: {
-              ...attribs,
-              src: attribs.src?.startsWith('http') ? staticProxy + attribs.src : attribs.src,
-            },
-          }),
         },
       }),
     })),

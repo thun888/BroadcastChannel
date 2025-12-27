@@ -1,9 +1,7 @@
-import { getEnv } from '../lib/env'
 import { getChannelInfo } from '../lib/telegram'
 
 export async function GET(Astro) {
   const { SITE_URL } = Astro.locals
-  const staticProxy = getEnv(import.meta.env, Astro, 'STATIC_PROXY') ?? '/static/'
   const tag = Astro.url.searchParams.get('tag')
   const channel = await getChannelInfo(Astro, {
     q: tag ? `#${tag}` : '',
@@ -26,8 +24,7 @@ export async function GET(Astro) {
       description: item.description,
       date_published: new Date(item.datetime),
       tags: item.tags,
-      content_html: item.content
-        .replace(/(src|poster)="(https?:\/\/[^"]+)"/gi, (match, attr, url) => `${attr}="${staticProxy}${url}"`),
+      content_html: item.content,
     })),
   })
 }
