@@ -28,6 +28,7 @@ const timeago = datetime.isBefore(dayjs().subtract(1, 'w')) ? datetime.format('H
         <time datetime={post.datetime} title={timeago}>{timeago}</time>
       </a>
     </div>
+    <!-- {COMMENTS && isItem && <span class="artalk-pv-count"></span>} -->
   </div>
   {post.content.length > 0 && <div class={`text-box content`} set:html={post.content} />}
   {
@@ -46,3 +47,9 @@ const timeago = datetime.isBefore(dayjs().subtract(1, 'w')) ? datetime.format('H
 
   {COMMENTS && isItem && <Comments post={post} type={COMMENT_PROVIDER} channel={channel} />}
 </div>
+
+<style is:inline>
+  .artalk-pv-count {
+    color: #adafb1;
+  }
+</style>
