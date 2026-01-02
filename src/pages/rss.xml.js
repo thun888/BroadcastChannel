@@ -44,6 +44,9 @@ export async function GET(Astro) {
 
   response.headers.set('Content-Type', 'text/xml')
   response.headers.set('Cache-Control', 'public, max-age=3600')
+  response.headers.set('Access-Control-Allow-Origin', '*')
+  response.headers.set('Access-Control-Allow-Methods', 'GET, OPTIONS')
+  response.headers.set('Access-Control-Allow-Headers', 'Content-Type')
 
   return response
 }
